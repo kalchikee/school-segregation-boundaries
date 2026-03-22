@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>School Segregation Boundaries — Attendance Zone Discontinuity · Chicago</title>
+  <link rel="stylesheet" href="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.css"/>
+  <link rel="stylesheet" href="style.css"/>
+</head>
+<body>
+  <header id="app-header">
+    <div id="title-block">
+      <h1>School Segregation Boundaries</h1>
+      <p>Attendance Zone Racial Discontinuity · Chicago Public Schools · NCES SABINS / CPS</p>
+    </div>
+    <div id="stats-bar">
+      <div class="stat-pill"><span class="stat-num" id="stat-zones">30</span><span class="stat-label">zones analyzed</span></div>
+      <div class="stat-pill"><span class="stat-num" id="stat-boundaries">95</span><span class="stat-label">boundaries scored</span></div>
+      <div class="stat-pill"><span class="stat-num" id="stat-critical">—</span><span class="stat-label">critical BSI ≥75</span></div>
+      <div class="stat-pill"><span class="stat-num" id="stat-highway">—</span><span class="stat-label">follow highway</span></div>
+    </div>
+  </header>
+
+  <main id="main-layout">
+    <aside id="sidebar">
+      <section class="panel">
+        <h2>Display</h2>
+        <label class="filter-group">
+          Zone color
+          <select id="zone-color">
+            <option value="race">% Minority enrollment</option>
+            <option value="income">% Free/reduced lunch</option>
+            <option value="performance">Test proficiency %</option>
+          </select>
+        </label>
+        <label class="filter-group">
+          BSI threshold
+          <input type="range" id="bsi-threshold" min="0" max="100" value="0" style="accent-color:var(--accent)"/>
+          <span id="bsi-label" style="font-size:11px;color:var(--muted)">Show all boundaries</span>
+        </label>
+        <label class="filter-group checkbox-group">
+          <input type="checkbox" id="toggle-highway-only"/>
+          Show only highway-boundary crossings
+        </label>
+      </section>
+
+      <section class="panel" id="legend-panel">
+        <h2>Boundary Segregation Index</h2>
+        <div class="legend-item"><span class="legend-line" style="background:#e84141;width:28px;height:4px"></span>Critical BSI ≥ 75</div>
+        <div class="legend-item"><span class="legend-line" style="background:#ff7b00;width:28px;height:3px"></span>High BSI 50–74</div>
+        <div class="legend-item"><span class="legend-line" style="background:#ffd700;width:28px;height:2px"></span>Moderate BSI 25–49</div>
+        <div class="legend-item"><span class="legend-line" style="background:#44cc44;width:28px;height:1px"></span>Low BSI &lt; 25</div>
+        <div style="margin-top:10px;padding-top:10px;border-top:1px solid var(--border)">
+          <div class="legend-item">Zones colored by <span id="legend-zone-desc" style="color:var(--accent);margin-left:4px">% minority</span></div>
+        </div>
+      </section>
+
+      <section class="panel" id="comparison-panel" style="display:none">
+        <div id="comp-header">
+          <h2>Boundary Comparison</h2>
+          <button id="comp-close">✕</button>
+        </div>
+        <div id="comparison-content"></div>
+      </section>
+
+      <section class="panel" id="about-panel">
+        <h2>About</h2>
+        <p>School attendance boundaries determine which school a child attends based on where they live. In Chicago, many boundaries run along highways and rail lines — physical barriers that were often routed through Black neighborhoods in the mid-20th century.</p>
+        <p style="margin-top:8px">The <strong>Boundary Segregation Index (BSI)</strong> measures the demographic gap between schools on either side of a shared boundary line. Click any boundary to compare the two schools.</p>
+        <p style="margin-top:8px">Data: NCES SABINS · CPS Open Data · Census 2020 · Illinois ISBE Report Card</p>
+      </section>
+    </aside>
+    <div id="map"></div>
+  </main>
+
+  <script src="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
