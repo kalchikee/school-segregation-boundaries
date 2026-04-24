@@ -55,7 +55,8 @@
         <div class="legend-item"><span class="legend-line" style="background:#ffd700;width:28px;height:2px"></span>Moderate BSI 25–49</div>
         <div class="legend-item"><span class="legend-line" style="background:#44cc44;width:28px;height:1px"></span>Low BSI &lt; 25</div>
         <div style="margin-top:10px;padding-top:10px;border-top:1px solid var(--border)">
-          <div class="legend-item">Zones colored by <span id="legend-zone-desc" style="color:var(--accent);margin-left:4px">% minority</span></div>
+          <div class="legend-item"><span class="legend-dot"></span>School location</div>
+          <div class="legend-item" style="margin-top:6px">Zones colored by <span id="legend-zone-desc" style="color:var(--accent);margin-left:4px">% minority</span></div>
         </div>
       </section>
 
@@ -76,6 +77,7 @@
         <h2>About</h2>
         <p>School attendance boundaries determine which school a child attends based on where they live. In Chicago, many boundaries run along highways and rail lines — physical barriers that were often routed through Black neighborhoods in the mid-20th century.</p>
         <p style="margin-top:8px">The <strong>Boundary Segregation Index (BSI)</strong> is a weighted composite: 40% racial composition gap, 30% low-income gap, 30% test-proficiency gap between the two schools on either side of a shared boundary. Click any boundary, or a name from the list above, to compare the two schools.</p>
+        <p style="margin-top:8px" class="note">Zone polygons in this demo are Voronoi cells around each school location (each point in a zone is closer to that school than to any other in the sample). Real NCES SABINS boundaries follow streets and other features.</p>
         <p style="margin-top:8px">Data: NCES SABINS · CPS Open Data · Census 2020 · Illinois ISBE Report Card</p>
       </section>
     </aside>

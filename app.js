@@ -52,8 +52,9 @@ map.on('load', () => {
   Promise.all([
     fetch('data/attendance_zones.geojson').then(r => { if (!r.ok) throw new Error('zones'); return r.json(); }),
     fetch('data/boundary_lines_bsi.geojson').then(r => { if (!r.ok) throw new Error('boundaries'); return r.json(); }),
-    fetch('data/schools_demographics.json').then(r => { if (!r.ok) throw new Error('schools'); return r.json(); })
-  ]).then(([zones, boundaries, schools]) => {
+    fetch('data/schools_demographics.json').then(r => { if (!r.ok) throw new Error('schools'); return r.json(); }),
+    fetch('data/schools_points.geojson').then(r => { if (!r.ok) throw new Error('points'); return r.json(); })
+  ]).then(([zones, boundaries, schools, points]) => {
     zoneData = zones;
     boundaryData = boundaries;
     schoolsById = schools;
@@ -64,6 +65,7 @@ map.on('load', () => {
 
     map.addSource('zones', { type: 'geojson', data: zones });
     map.addSource('boundaries', { type: 'geojson', data: boundaries });
+    map.addSource('schools', { type: 'geojson', data: points });
     map.addSource('selected', { type: 'geojson', data: { type: 'FeatureCollection', features: [] } });
 
     map.addLayer({
@@ -108,6 +110,27 @@ map.on('load', () => {
         'line-color': '#ffffff',
         'line-width': 3,
         'line-dasharray': [2, 1.5]
+      }
+    });
+    map.addLayer({
+      id: 'school-dot-halo',
+      type: 'circle',
+      source: 'schools',
+      paint: {
+        'circle-radius': 7,
+        'circle-color': '#0d0f14',
+        'circle-opacity': 0.6
+      }
+    });
+    map.addLayer({
+      id: 'school-dot',
+      type: 'circle',
+      source: 'schools',
+      paint: {
+        'circle-radius': 4,
+        'circle-color': '#ffffff',
+        'circle-stroke-color': '#0d0f14',
+        'circle-stroke-width': 1.5
       }
     });
 
@@ -162,6 +185,16 @@ function setupInteractions() {
     }
   });
   map.on('mouseleave', 'zone-fill', () => {
+    map.getCanvas().style.cursor = '';
+    if (hoverPopup) { hoverPopup.remove(); hoverPopup = null; }
+  });
+
+  map.on('mouseenter', 'school-dot', e => {
+    map.getCanvas().style.cursor = 'pointer';
+    const coords = e.features[0].geometry.coordinates.slice();
+    showHoverPopup(coords, zonePopupHtml(e.features[0].properties));
+  });
+  map.on('mouseleave', 'school-dot', () => {
     map.getCanvas().style.cursor = '';
     if (hoverPopup) { hoverPopup.remove(); hoverPopup = null; }
   });
