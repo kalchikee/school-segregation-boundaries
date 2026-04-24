@@ -89,8 +89,18 @@ map.on('load', () => {
       source: 'boundaries',
       paint: {
         'line-color': ['interpolate', ['linear'], ['get', 'bsi_score'], 0, '#44cc44', 25, '#ffd700', 50, '#ff7b00', 75, '#e84141'],
-        'line-width': 10,
-        'line-opacity': 0.18
+        'line-width': 12,
+        'line-opacity': 0.15
+      }
+    });
+    map.addLayer({
+      id: 'boundary-casing',
+      type: 'line',
+      source: 'boundaries',
+      paint: {
+        'line-color': '#0d0f14',
+        'line-width': ['interpolate', ['linear'], ['get', 'bsi_score'], 0, 2.5, 60, 6.5],
+        'line-opacity': 0.8
       }
     });
     map.addLayer({
@@ -298,7 +308,7 @@ function applyBoundaryFilter() {
   if (threshold > 0) clauses.push(['>=', ['get', 'bsi_score'], threshold]);
   if (hwyOnly) clauses.push(['==', ['get', 'follows_highway'], true]);
   const filter = clauses.length === 0 ? null : clauses.length === 1 ? clauses[0] : ['all', ...clauses];
-  ['boundary-lines', 'boundary-bg'].forEach(l => map.setFilter(l, filter));
+  ['boundary-lines', 'boundary-bg', 'boundary-casing'].forEach(l => map.setFilter(l, filter));
 }
 
 function setupControls() {
