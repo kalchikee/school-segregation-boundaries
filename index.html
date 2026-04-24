@@ -4,6 +4,7 @@
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>School Segregation Boundaries — Attendance Zone Discontinuity · Chicago</title>
+  <meta name="description" content="Interactive map of Chicago school attendance boundaries, scoring the demographic, economic, and academic gap between adjacent zones."/>
   <link rel="stylesheet" href="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.css"/>
   <link rel="stylesheet" href="style.css"/>
 </head>
@@ -14,15 +15,18 @@
       <p>Attendance Zone Racial Discontinuity · Chicago Public Schools · NCES SABINS / CPS</p>
     </div>
     <div id="stats-bar">
-      <div class="stat-pill"><span class="stat-num" id="stat-zones">30</span><span class="stat-label">zones analyzed</span></div>
-      <div class="stat-pill"><span class="stat-num" id="stat-boundaries">95</span><span class="stat-label">boundaries scored</span></div>
-      <div class="stat-pill"><span class="stat-num" id="stat-critical">—</span><span class="stat-label">critical BSI ≥75</span></div>
+      <div class="stat-pill"><span class="stat-num" id="stat-zones">—</span><span class="stat-label">zones analyzed</span></div>
+      <div class="stat-pill"><span class="stat-num" id="stat-boundaries">—</span><span class="stat-label">boundaries scored</span></div>
+      <div class="stat-pill"><span class="stat-num" id="stat-critical">—</span><span class="stat-label">high+ BSI ≥50</span></div>
       <div class="stat-pill"><span class="stat-num" id="stat-highway">—</span><span class="stat-label">follow highway</span></div>
     </div>
   </header>
 
+  <div id="error-banner" role="alert" style="display:none"></div>
+
   <main id="main-layout">
-    <aside id="sidebar">
+    <button id="sidebar-toggle" aria-label="Toggle sidebar" aria-controls="sidebar" aria-expanded="true">☰</button>
+    <aside id="sidebar" aria-label="Map controls and information">
       <section class="panel">
         <h2>Display</h2>
         <label class="filter-group">
@@ -55,10 +59,15 @@
         </div>
       </section>
 
+      <section class="panel" id="top-panel">
+        <h2>Highest BSI boundaries</h2>
+        <div id="top-list"></div>
+      </section>
+
       <section class="panel" id="comparison-panel" style="display:none">
         <div id="comp-header">
           <h2>Boundary Comparison</h2>
-          <button id="comp-close">✕</button>
+          <button id="comp-close" aria-label="Close comparison panel" title="Close (Esc)">✕</button>
         </div>
         <div id="comparison-content"></div>
       </section>
@@ -66,7 +75,7 @@
       <section class="panel" id="about-panel">
         <h2>About</h2>
         <p>School attendance boundaries determine which school a child attends based on where they live. In Chicago, many boundaries run along highways and rail lines — physical barriers that were often routed through Black neighborhoods in the mid-20th century.</p>
-        <p style="margin-top:8px">The <strong>Boundary Segregation Index (BSI)</strong> measures the demographic gap between schools on either side of a shared boundary line. Click any boundary to compare the two schools.</p>
+        <p style="margin-top:8px">The <strong>Boundary Segregation Index (BSI)</strong> is a weighted composite: 40% racial composition gap, 30% low-income gap, 30% test-proficiency gap between the two schools on either side of a shared boundary. Click any boundary, or a name from the list above, to compare the two schools.</p>
         <p style="margin-top:8px">Data: NCES SABINS · CPS Open Data · Census 2020 · Illinois ISBE Report Card</p>
       </section>
     </aside>
@@ -75,5 +84,15 @@
 
   <script src="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.js"></script>
   <script src="app.js"></script>
+  <script>
+    (function () {
+      var btn = document.getElementById('sidebar-toggle');
+      var sb = document.getElementById('sidebar');
+      btn.addEventListener('click', function () {
+        var open = sb.classList.toggle('open');
+        btn.setAttribute('aria-expanded', String(open));
+      });
+    })();
+  </script>
 </body>
 </html>
