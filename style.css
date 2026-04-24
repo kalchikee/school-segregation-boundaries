@@ -57,6 +57,10 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:var(--f
 .hp-title{color:var(--text);font-weight:600;margin-bottom:4px;line-height:1.3}
 .hp-bsi{font-size:14px;font-weight:700}
 .hp-flag{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.4px;margin-top:2px}
+.hp-sub{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.4px;margin-bottom:4px}
+.hp-rows{margin-top:4px}
+.hp-row{display:flex;justify-content:space-between;gap:12px;font-size:11px;color:var(--muted);padding:1px 0}
+.hp-row strong{color:var(--text);font-weight:600}
 #map{flex:1}
 
 @media (max-width: 720px){

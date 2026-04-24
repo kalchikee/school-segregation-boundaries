@@ -135,13 +135,13 @@ function renderStats(zones, boundaries) {
 function setupInteractions() {
   map.on('mouseenter', 'boundary-lines', e => {
     map.getCanvas().style.cursor = 'pointer';
-    const p = e.features[0].properties;
-    showHoverPopup(e.lngLat, p);
+    showHoverPopup(e.lngLat, hoverPopupHtml(e.features[0].properties));
   });
   map.on('mousemove', 'boundary-lines', e => {
-    if (hoverPopup) hoverPopup.setLngLat(e.lngLat);
-    const p = e.features[0].properties;
-    if (hoverPopup) hoverPopup.setHTML(hoverPopupHtml(p));
+    if (hoverPopup) {
+      hoverPopup.setLngLat(e.lngLat);
+      hoverPopup.setHTML(hoverPopupHtml(e.features[0].properties));
+    }
   });
   map.on('mouseleave', 'boundary-lines', () => {
     map.getCanvas().style.cursor = '';
@@ -149,6 +149,21 @@ function setupInteractions() {
   });
   map.on('click', 'boundary-lines', e => {
     showBoundaryComparison(e.features[0].properties);
+  });
+
+  map.on('mouseenter', 'zone-fill', e => {
+    map.getCanvas().style.cursor = 'pointer';
+    showHoverPopup(e.lngLat, zonePopupHtml(e.features[0].properties));
+  });
+  map.on('mousemove', 'zone-fill', e => {
+    if (hoverPopup) {
+      hoverPopup.setLngLat(e.lngLat);
+      hoverPopup.setHTML(zonePopupHtml(e.features[0].properties));
+    }
+  });
+  map.on('mouseleave', 'zone-fill', () => {
+    map.getCanvas().style.cursor = '';
+    if (hoverPopup) { hoverPopup.remove(); hoverPopup = null; }
   });
 }
 
@@ -161,11 +176,23 @@ function hoverPopupHtml(p) {
   </div>`;
 }
 
-function showHoverPopup(lngLat, p) {
+function zonePopupHtml(p) {
+  return `<div class="hover-popup">
+    <div class="hp-title">${p.school_name}</div>
+    <div class="hp-sub">Attendance zone · ${p.community_area}</div>
+    <div class="hp-rows">
+      <div class="hp-row"><span>% Minority</span><strong>${p.pct_minority}%</strong></div>
+      <div class="hp-row"><span>% Low income</span><strong>${p.pct_low_income}%</strong></div>
+      <div class="hp-row"><span>Proficiency</span><strong>${p.test_proficiency_pct}%</strong></div>
+    </div>
+  </div>`;
+}
+
+function showHoverPopup(lngLat, html) {
   if (hoverPopup) hoverPopup.remove();
   hoverPopup = new maplibregl.Popup({ closeButton: false, closeOnClick: false, className: 'hp-container', offset: 8 })
     .setLngLat(lngLat)
-    .setHTML(hoverPopupHtml(p))
+    .setHTML(html)
     .addTo(map);
 }
 
