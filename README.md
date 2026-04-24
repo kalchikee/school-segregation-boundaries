@@ -13,8 +13,10 @@ School district attendance boundaries determine which school a child attends. In
 
 A composite score (0–100) for every shared attendance zone boundary:
 - **40%** — Racial composition discontinuity (% non-white difference between adjacent schools)
-- **30%** — Economic discontinuity (% free/reduced lunch difference)
-- **30%** — Academic performance discontinuity (test proficiency gap)
+- **30%** — Economic discontinuity (% low-income difference)
+- **30%** — Attendance gap (scaled; attendance is the most consistently-reported per-school engagement metric in the current CPS Progress Report feed)
+
+The demo loads **356 real CPS elementary attendance zones** from the City of Chicago Data Portal (SY2425) with demographics from the School Profile Information feed. Shared boundaries between adjacent zones (931 pairs) are derived directly from the polygon geometry. See `notebooks/build_real_dataset.py` for the pipeline.
 
 ### Key Findings
 

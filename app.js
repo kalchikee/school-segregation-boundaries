@@ -220,13 +220,14 @@ function hoverPopupHtml(p) {
 }
 
 function zonePopupHtml(p) {
+  const attendance = p.attendance_pct != null ? `<div class="hp-row"><span>Attendance</span><strong>${p.attendance_pct}%</strong></div>` : '';
   return `<div class="hover-popup">
     <div class="hp-title">${p.school_name}</div>
-    <div class="hp-sub">Attendance zone · ${p.community_area}</div>
+    <div class="hp-sub">Attendance zone · ${p.community_area || 'Chicago'}</div>
     <div class="hp-rows">
       <div class="hp-row"><span>% Minority</span><strong>${p.pct_minority}%</strong></div>
       <div class="hp-row"><span>% Low income</span><strong>${p.pct_low_income}%</strong></div>
-      <div class="hp-row"><span>Proficiency</span><strong>${p.test_proficiency_pct}%</strong></div>
+      ${attendance}
     </div>
   </div>`;
 }
@@ -257,7 +258,6 @@ function showBoundaryComparison(p) {
 
   const sA = schoolsById[p.school_a_name] || null;
   const sB = schoolsById[p.school_b_name] || null;
-  const expGap = (sA && sB) ? Math.abs(sA.per_pupil_expenditure - sB.per_pupil_expenditure) : null;
 
   document.getElementById('comparison-content').innerHTML = `
     <div class="bsi-score-display">
@@ -269,7 +269,6 @@ function showBoundaryComparison(p) {
       ${schoolCard(p.school_a_name, sA)}
       ${schoolCard(p.school_b_name, sB)}
     </div>
-    ${expGap !== null ? `<div class="exp-gap">Per-pupil spending gap: <strong>$${expGap.toLocaleString()}/yr</strong></div>` : ''}
     <div class="bsi-components">
       <div class="bsi-comp-row">
         <div class="bsi-comp-label"><span>Racial discontinuity (40%)</span><span style="color:var(--text)">${p.racial_discontinuity}%</span></div>
@@ -280,8 +279,8 @@ function showBoundaryComparison(p) {
         <div class="bsi-comp-track"><div class="bsi-comp-fill" style="width:${p.economic_discontinuity}%;background:#ff7b00"></div></div>
       </div>
       <div class="bsi-comp-row">
-        <div class="bsi-comp-label"><span>Performance gap (30%)</span><span style="color:var(--text)">${p.performance_discontinuity} pts</span></div>
-        <div class="bsi-comp-track"><div class="bsi-comp-fill" style="width:${Math.min(100, p.performance_discontinuity * 1.5)}%;background:#ffd700"></div></div>
+        <div class="bsi-comp-label"><span>Attendance gap (30%)</span><span style="color:var(--text)">${p.performance_discontinuity}</span></div>
+        <div class="bsi-comp-track"><div class="bsi-comp-fill" style="width:${p.performance_discontinuity}%;background:#ffd700"></div></div>
       </div>
     </div>
     ${flags.join('')}
@@ -290,13 +289,15 @@ function showBoundaryComparison(p) {
 
 function schoolCard(name, data) {
   if (!data) return `<div class="school-card"><div class="sc-name">${name}</div></div>`;
+  const attendance = data.attendance_pct != null ? `<div class="sc-row"><span>Attendance</span><span class="sc-val">${data.attendance_pct}%</span></div>` : '';
+  const enroll = data.total_enrollment ? `<div class="sc-row"><span>Enrollment</span><span class="sc-val">${data.total_enrollment}</span></div>` : '';
   return `
     <div class="school-card">
       <div class="sc-name">${name}</div>
       <div class="sc-row"><span>% Minority</span><span class="sc-val">${data.pct_minority}%</span></div>
       <div class="sc-row"><span>% Low income</span><span class="sc-val">${data.pct_low_income}%</span></div>
-      <div class="sc-row"><span>Test proficiency</span><span class="sc-val">${data.test_proficiency_pct}%</span></div>
-      <div class="sc-row"><span>Per-pupil exp.</span><span class="sc-val">$${Number(data.per_pupil_expenditure).toLocaleString()}</span></div>
+      ${attendance}
+      ${enroll}
     </div>
   `;
 }
@@ -314,14 +315,14 @@ function applyBoundaryFilter() {
 function setupControls() {
   document.getElementById('zone-color').addEventListener('change', e => {
     const val = e.target.value;
-    const field = val === 'race' ? 'pct_minority' : val === 'income' ? 'pct_low_income' : 'test_proficiency_pct';
+    const field = val === 'race' ? 'pct_minority' : val === 'income' ? 'pct_low_income' : 'attendance_pct';
     const invert = val === 'performance';
-    const expr = ['interpolate', ['linear'], ['get', field],
-      ...(invert ? [0, '#e84141', 50, '#ffd700', 100, '#44cc44'] : [0, '#44cc44', 50, '#ffd700', 100, '#e84141'])
-    ];
+    const expr = val === 'performance'
+      ? ['interpolate', ['linear'], ['coalesce', ['get', field], 88], 80, '#e84141', 90, '#ffd700', 96, '#44cc44']
+      : ['interpolate', ['linear'], ['get', field], 0, '#44cc44', 50, '#ffd700', 100, '#e84141'];
     map.setPaintProperty('zone-fill', 'fill-color', expr);
     document.getElementById('legend-zone-desc').textContent =
-      val === 'race' ? '% minority' : val === 'income' ? '% low income' : 'proficiency';
+      val === 'race' ? '% minority' : val === 'income' ? '% low income' : 'attendance';
   });
 
   document.getElementById('bsi-threshold').addEventListener('input', e => {

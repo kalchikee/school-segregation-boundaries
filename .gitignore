@@ -1,0 +1,7 @@
+# Raw data downloads — regenerate via notebooks/build_real_dataset.py
+data/raw/
+
+.DS_Store
+Thumbs.db
+*.pyc
+__pycache__/

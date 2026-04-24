@@ -33,8 +33,8 @@
           Zone color
           <select id="zone-color">
             <option value="race">% Minority enrollment</option>
-            <option value="income">% Free/reduced lunch</option>
-            <option value="performance">Test proficiency %</option>
+            <option value="income">% Low-income</option>
+            <option value="performance">Attendance %</option>
           </select>
         </label>
         <label class="filter-group">
@@ -76,9 +76,8 @@
       <section class="panel" id="about-panel">
         <h2>About</h2>
         <p>School attendance boundaries determine which school a child attends based on where they live. In Chicago, many boundaries run along highways and rail lines — physical barriers that were often routed through Black neighborhoods in the mid-20th century.</p>
-        <p style="margin-top:8px">The <strong>Boundary Segregation Index (BSI)</strong> is a weighted composite: 40% racial composition gap, 30% low-income gap, 30% test-proficiency gap between the two schools on either side of a shared boundary. Click any boundary, or a name from the list above, to compare the two schools.</p>
-        <p style="margin-top:8px" class="note">Zone polygons in this demo are Voronoi cells around each school location (each point in a zone is closer to that school than to any other in the sample). Real NCES SABINS boundaries follow streets and other features.</p>
-        <p style="margin-top:8px">Data: NCES SABINS · CPS Open Data · Census 2020 · Illinois ISBE Report Card</p>
+        <p style="margin-top:8px">The <strong>Boundary Segregation Index (BSI)</strong> is a weighted composite: 40% racial composition gap, 30% low-income gap, 30% attendance gap between the two schools on either side of a shared boundary. Click any boundary, or a name from the list above, to compare the two schools.</p>
+        <p style="margin-top:8px" class="note">Data: Chicago Public Schools — Elementary School Attendance Boundaries SY2425, School Profile Information SY2223, School Progress Reports SY2425 (all via the City of Chicago Data Portal). Expressway centerlines are approximated.</p>
       </section>
     </aside>
     <div id="map"></div>
